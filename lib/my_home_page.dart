@@ -19,30 +19,27 @@ class MyHomePage extends StatelessWidget {
         backgroundColor: Colors.black,
         title: const UserAppBar(),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.only(left: 8),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 8),
-              PlayerCardSection(),
-              const SizedBox(height: 8),
-              AlbumRowSection(title: '重溫經典', albums: classicAlbums),
-              const SizedBox(height: 8),
-              AlbumRowSection(title: '電台推薦', albums: podcastRecommandation),
-              const SizedBox(height: 8),
-              AlbumRowSection(title: '這些專輯有你的愛歌', albums: yourFavorites),
-              const SizedBox(height: 8),
-              AlbumRowSection(title: '熱門電台', albums: hitRadio),
-              const SizedBox(height: 8),
-              AlbumRowSection(title: '無論晴天雨天，音樂一直在', albums: noMatterWeather),
-              const SizedBox(height: 8),
-              AlbumRowSection(title: '為你挑選的最新發行音樂', albums: popMusic),
-              const SizedBox(height: 8),
-            ],
-          ),
-        ),
+      body: ListView.builder(
+        padding: const EdgeInsets.only(left: 8),
+        scrollDirection: Axis.vertical,
+        physics: const BouncingScrollPhysics(), // 彈性滾動效果
+        itemCount: AlbumLists.listCount + 1, // 加1來包含PlayerCardSection
+        itemBuilder: (buildContext, index) {
+          if (index == 0) {
+            return Padding(
+              padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+              child: PlayerCardSection(),
+            );
+          }
+          final albumIndex = index - 1; // 調整索引以匹配專輯列表
+          final title = AlbumLists.listTitles[albumIndex];
+          final albums = AlbumLists.getItems(albumIndex);
+
+          return Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: AlbumRowSection(title: title, albums: albums),
+          );
+        },
       ),
     );
   }
@@ -198,15 +195,19 @@ class AlbumRowSection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 18),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: [
-              for (final (album, type) in albums) ...[
-                AlbumRowTile(album: album, type: type),
-                const SizedBox(width: 12),
-              ],
-            ],
+        SizedBox(
+          height: 250, // Adjust height as needed
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            physics: const BouncingScrollPhysics(), // 彈性滾動效果
+            itemCount: albums.length,
+            itemBuilder: (buildContxt, index) {
+              final album = albums[index];
+              return Padding(
+                padding: const EdgeInsets.only(right: 12.0),
+                child: AlbumRowTile(album: album.$1, type: album.$2),
+              );
+            },
           ),
         ),
       ],
