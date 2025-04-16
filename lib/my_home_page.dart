@@ -104,7 +104,7 @@ class _AlbumRowTileState extends State<AlbumRowTile> {
       height: 250, // 設定固定高度
       child: Column(
         mainAxisSize: MainAxisSize.min, // 確保 Column 不會擴展超過需要的空間
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: isArtist ? CrossAxisAlignment.center : CrossAxisAlignment.start, // type: album 時水平置中對齊
         children: [
           if (isLoading)
             const SizedBox(
@@ -128,13 +128,13 @@ class _AlbumRowTileState extends State<AlbumRowTile> {
               ),
             ),
           const SizedBox(height: 10),
-          ..._buildAlbumDetails(false), // 傳入 false 以確保文字左對齊
+          ..._buildAlbumDetails(),
         ],
       ),
     );
   }
 
-  List<Widget> _buildAlbumDetails(bool isArtist) {
+  List<Widget> _buildAlbumDetails() {
     return [
       if (widget.album.moduleType?.isNotEmpty ?? false)
         Text(
@@ -144,7 +144,6 @@ class _AlbumRowTileState extends State<AlbumRowTile> {
             fontSize: 10,
             fontWeight: FontWeight.w500,
           ),
-          textAlign: TextAlign.start,
         ),
       if (widget.album.name?.isNotEmpty ?? false)
         Text(
@@ -154,19 +153,16 @@ class _AlbumRowTileState extends State<AlbumRowTile> {
             fontSize: 12,
             fontWeight: FontWeight.w500,
           ),
-          textAlign: TextAlign.start,
         ),
       if (widget.album.artistName?.isNotEmpty ?? false)
         Text(
           widget.album.artistName!,
           style: const TextStyle(color: Colors.grey, fontSize: 12),
-          textAlign: TextAlign.start,
         ),
       if (widget.album.additionalType?.isNotEmpty ?? false)
         Text(
           widget.album.additionalType!,
           style: const TextStyle(color: Colors.grey, fontSize: 12),
-          textAlign: TextAlign.start,
         ),
     ];
   }
